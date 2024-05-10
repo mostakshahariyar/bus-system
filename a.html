@@ -1,0 +1,135 @@
+<?php
+require_once ('config/connect.php');
+$query = "SELECT * FROM activity";
+$result = mysqli_query($con, $query);
+$row = mysqli_fetch_array($result, MYSQLI_ASSOC);
+$status = $row['status'];
+if ($status == "YES") {
+    $email = $row["email"];
+} else {
+    echo '<script>
+                alert("do login first");
+                window.location.href = "/tickets-system-only-html-and-css-main/login.php";
+            </script>';
+}
+$seat = array(); // Initialize the $seat array
+
+if (isset($_GET['seats'])) {
+    // Decode the JSON string back into an array
+    $seat = json_decode($_GET['seats'], true);
+
+    // Output the total number of elements in the $seat array
+    echo "Total number of seats: " . count($seat);
+}
+echo 'ami aschi'; // This line will be executed regardless of the condition above
+?>
+
+
+
+
+
+<script>
+  <?php
+  if (isset($_GET['busid']) && isset($_GET['date'])) {
+      $id = $_GET['busid'];
+      $date = $_GET['date'];
+      $query = "SELECT * FROM buslist WHERE id ='$id'";
+      $result = mysqli_query($con, $query);
+      $row = mysqli_fetch_array($result);
+      $perSetPrice = $row['fare'];
+  }
+  ?>
+
+  document.addEventListener("DOMContentLoaded", function () {
+      var kbd = document.querySelectorAll(".kbd");
+      var perSetPrice = <?php echo json_encode($perSetPrice); ?>;
+      var arr = [];
+      kbd.forEach(function (op) {
+          op.addEventListener("click", function () {
+              var opp = op.innerText;
+              if (arr.includes(opp)) {
+                  console.log('same seat selected');
+                  return;
+              }
+              arr.push(opp);
+              var dup = Array.from(new Set(arr));
+              console.log(dup.length, 'duplicate', dup);
+
+              if (dup.length <= 4) {
+                  op.style.background = '#67f851';
+                  var four = document.getElementById('four');
+                  var four1 = parseInt(four.innerText);
+                  var minus = four1 - 1;
+                  four.innerText = minus;
+                  var zero = document.getElementById('zero');
+                  var zero1 = parseInt(zero.innerText);
+                  var sum = zero1 + 1;
+                  zero.innerText = sum;
+
+                  var app = document.getElementById('pll');
+                  var divv = document.createElement('div');
+                  var makeApp = document.createElement('p');
+                  dup.forEach(function (value) {
+                      makeApp.innerText = value;
+                  });
+                  divv.appendChild(makeApp);
+                  var makeApp3 = document.createElement('p');
+                  makeApp3.innerText = perSetPrice;
+                  divv.appendChild(makeApp3);
+                  app.appendChild(divv);
+                  divv.style.width = '100%';
+                  divv.style.display = 'flex';
+                  divv.style.justifyContent = 'space-evenly';
+
+                  var bdt1 = document.getElementById('bdt1');
+                  var bd1 = parseInt(bdt1.innerText);
+                  var bdtSum = bd1 + perSetPrice;
+                  bdt1.innerText = bdtSum;
+
+                  var ds = document.getElementById('ds');
+                  if (dup.length >=
+
+                      1) {
+                      ds.disabled = false;
+                  }
+                  console.log('value of seat:', opp);
+                  console.log('value of seat:', perSetPrice);
+              } else {
+                  alert('You can only book maximum of 4 seats');
+              }
+
+              ds.addEventListener('click', function () {
+                  var hi = document.getElementById('hi');
+                  hi.innerHTML = 'sda';
+              });
+          });
+      });
+  });
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
